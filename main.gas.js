@@ -41,7 +41,8 @@ function pushToCalendar(calendar,value,period,w){
   
   var start_date = new Date(year,month,day,0,min);
   var end_date = new Date(year,month,day,0,min+70);
-  var recurrence = CalendarApp.newRecurrence().addWeeklyRule().times(11);
+  // add function
+  var recurrence = CalendarApp.newRecurrence().addWeeklyRule().until(endTermDate());
   
   // exucute creation of event
   calendar.createEventSeries(value,start_date,end_date,recurrence);
@@ -84,4 +85,43 @@ function thisMonday(){
   monday.setDate(date-day+1);
   return monday;
  
+}
+
+// end rec
+function endTermDate(){
+  // change based on today
+  var today = new Date();
+  var endDate = today;
+  var thisYear = today.getFullYear();
+  var thisMonth = today.getMonth();
+  
+  switch(thisMonth){
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      // spring
+      endDate.setFullYear(thisYear,5,19);
+      break;
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+      // autum
+      endDate.setFullYear(thisYear,10,15);
+      break;
+    case 10:
+    case 11:
+      // winter
+      endDate.setFullYear(thisYear+1,1,19);
+      break;
+    case 0:
+    case 1:
+      // winter +1 year
+      endDate.setFullYear(thisYear,1,19);
+      break;
+  }
+  // Logger.log(endDate);
+  
+  return endDate;
 }
