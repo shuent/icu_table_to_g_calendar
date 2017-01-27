@@ -1,4 +1,5 @@
 function main() {
+  
   var sheet = SpreadsheetApp.getActiveSheet();
   var range = sheet.getRange('B2:G9');
   var values = range.getValues();
@@ -15,7 +16,8 @@ function main() {
         w +=1;
         continue;
       }else{
-        pushToCalendar(calendar,values[i][j],period,w)
+        
+        pushToCalendar(calendar,values[i][j],period,w);
         Logger.log(values[i][j]);
         w +=1;
       }
@@ -27,20 +29,30 @@ function main() {
 
 function pushToCalendar(calendar,value,period,w){
   
-  // new func to get this monday
+  // get this monday
   var bginSemMon = thisMonday();
   var year = bginSemMon.getFullYear();
   var month = bginSemMon.getMonth();
   var monday = bginSemMon.getDate();
   
   var day = monday+w;
+  
   var min = setPeriod(period);
+  var endMin = min+70;
+  var startMin;
+  
+  if (isLong4(value) == true){ 
+    startMin = min-35; 
+  }else{
+    startMin = min;
+  }
   
   // 10:10 => 00:610, set only by minutes
   Logger.log(new Date(year,month,day,0,min));
   
-  var start_date = new Date(year,month,day,0,min);
-  var end_date = new Date(year,month,day,0,min+70);
+  
+  var start_date = new Date(year,month,day,0,startMin);
+  var end_date = new Date(year,month,day,0,endMin);
   // add function
   var recurrence = CalendarApp.newRecurrence().addWeeklyRule().until(endTermDate());
   
@@ -124,4 +136,14 @@ function endTermDate(){
   // Logger.log(endDate);
   
   return endDate;
+}
+
+function isLong4(value){
+// if (value start with [*] ) 
+  // return true
+  if (value.slice(0,3)=="[*]"){
+    return true;
+  }else{
+    return false;
+  }
 }
